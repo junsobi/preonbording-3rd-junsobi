@@ -7,7 +7,7 @@ const api = axios.create({
 export const getSickList = async (query: string) => {
   try {
     console.info("calling api");
-    const response = await api.get(`/sick?name_like=${query}`);
+    const response = await api.get(`/sick?q=${query}`);
     return response.data;
   } catch (error: any) {
     console.error(error);

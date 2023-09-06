@@ -12,8 +12,11 @@ interface SearchContextProps {
   setIsFocused: (isFocused: boolean) => void;
   query: string;
   setQuery: (query: string) => void;
+  controlHelper: number;
+  setControlHelper: (value: number) => void;
+  searchHistory: string[];
+  setSearchHistory: (value: string[]) => void;
 }
-
 export const SearchContext = createContext<SearchContextProps | undefined>(
   undefined
 );
@@ -26,6 +29,8 @@ export const SearchProvider: React.FC<{ children?: React.ReactNode }> = ({
   const [isFocused, setIsFocused] = useState(false);
 
   const [query, setQuery] = useState("");
+  const [controlHelper, setControlHelper] = useState(-1);
+  const [searchHistory, setSearchHistory] = useState<string[]>([]);
 
   return (
     <SearchContext.Provider
@@ -36,6 +41,10 @@ export const SearchProvider: React.FC<{ children?: React.ReactNode }> = ({
         setIsFocused,
         query,
         setQuery,
+        controlHelper,
+        setControlHelper,
+        searchHistory,
+        setSearchHistory,
       }}
     >
       {children}

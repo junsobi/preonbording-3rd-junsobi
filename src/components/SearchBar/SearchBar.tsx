@@ -6,6 +6,7 @@ import { useSearchHandler } from "./hooks/useSearchHandler";
 import { useSubmitHandler } from "./hooks/useSubmitHandler";
 import { useClickOutside } from "./hooks/useClickOutside";
 import { useEscapeKey } from "./hooks/useEscapeKey";
+import { useControlHelper } from "./hooks/useControlHelper";
 
 function SearchBar() {
   const searchCtx = useContext(SearchContext);
@@ -20,7 +21,7 @@ function SearchBar() {
     e.preventDefault();
     handleFormSubmit(query);
   };
-
+  const handleKeyDown = useControlHelper();
   const searchBarRef = useRef<HTMLDivElement>(null);
   useClickOutside(searchBarRef, () => setIsFocused(false));
   useEscapeKey(() => setQuery(""));
@@ -35,6 +36,8 @@ function SearchBar() {
             value={query}
             onChange={(e) => handleChange(e.target.value)}
             onFocus={() => setIsFocused(true)}
+            onKeyDown={handleKeyDown}
+            tabIndex={0}
             className="outline-none w-full h-full pl-4 text-lg"
           />
         </form>

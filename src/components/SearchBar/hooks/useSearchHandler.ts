@@ -1,26 +1,28 @@
-import { useContext } from "react";
+import { useContext, useEffect, useRef } from "react";
 import { getSickList } from "../../../services/api/sickApi";
 import { SearchContext } from "../../../contexts/SearchContext";
 
 export const useSearchHandler = () => {
   const searchCtx = useContext(SearchContext);
-
   if (!searchCtx) throw new Error("Cannot find search context");
+  const { setResults, setQuery, query } = searchCtx;
 
-  const { setResults, setQuery } = searchCtx;
+  const debounceTimer = useRef<NodeJS.Timeout | null>(null);
+  const DEBOUNCE_TIME = 180;
 
-  const handleChange = async (newQuery: string) => {
-    setQuery(newQuery);
+  useEffect(() => {
+    if (debounceTimer.current) clearTimeout(debounceTimer.current);
+    debounceTimer.current = setTimeout(async () => {
+      if (query !== "") {
+        const results = await getSickList(query);
+        setResults(results);
+      }
+    }, DEBOUNCE_TIME);
 
-    if (newQuery) {
-      const results = await getSickList(newQuery);
+    return () => {
+      if (debounceTimer.current) clearTimeout(debounceTimer.current);
+    };
+  }, [setResults, query]);
 
-      console.log(results);
-      setResults(results);
-    } else {
-      setResults([]);
-    }
-  };
-
-  return { handleChange };
+  return { handleChange: setQuery };
 };

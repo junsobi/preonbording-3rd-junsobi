@@ -1,18 +1,23 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useContext } from "react";
 import { useSubmitHandler } from "../../SearchBar/hooks/useSubmitHandler";
 import SearchHistoryList from "./SearchHistoryList";
 import EmptySearchMessage from "./EmptySearchMessage";
+import { SearchContext } from "../../../contexts/SearchContext";
 
 function RecentSearches() {
   const { handleSubmit } = useSubmitHandler();
-  const [searchHistory, setSearchHistory] = useState<string[]>([]);
+
+  const searchCtx = useContext(SearchContext);
+  if (!searchCtx) throw new Error("Cannot find search context");
+
+  const { searchHistory, setSearchHistory } = searchCtx;
 
   useEffect(() => {
     const searchHistoryString = localStorage.getItem("searchHistory");
     if (searchHistoryString) {
       setSearchHistory(JSON.parse(searchHistoryString));
     }
-  }, []);
+  }, [setSearchHistory]);
 
   const sortedSearches = [...searchHistory].reverse().slice(0, 5);
 
@@ -32,7 +37,6 @@ function RecentSearches() {
 
       {sortedSearches.length > 0 ? (
         <SearchHistoryList
-          searches={sortedSearches}
           onClickItem={handleSubmit}
           onDeleteItem={handleDelete}
         />

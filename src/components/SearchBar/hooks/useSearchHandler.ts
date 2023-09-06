@@ -4,7 +4,9 @@ import { SearchContext } from "../../../contexts/SearchContext";
 
 export const useSearchHandler = () => {
   const searchCtx = useContext(SearchContext);
+
   if (!searchCtx) throw new Error("Cannot find search context");
+
   const { setResults, setQuery } = searchCtx;
 
   const handleChange = async (newQuery: string) => {
@@ -15,6 +17,8 @@ export const useSearchHandler = () => {
 
       console.log(results);
       setResults(results);
+    } else {
+      setResults([]);
     }
   };
 

@@ -7,11 +7,11 @@ import SearchResults from "./components/SearchResults";
 function SearchModal() {
   const searchCtx = useContext(SearchContext);
   if (!searchCtx) throw new Error("Cannot find search context");
-  const { results } = searchCtx;
+  const { query } = searchCtx;
 
   return (
     <SearchModalLayout>
-      {!results.length ? <RecentSearches /> : <SearchResults />}
+      {!query ? <RecentSearches /> : <SearchResults />}
     </SearchModalLayout>
   );
 }

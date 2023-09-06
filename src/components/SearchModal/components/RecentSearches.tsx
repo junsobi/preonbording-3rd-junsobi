@@ -1,33 +1,43 @@
-import React from "react";
-import { FaSearch } from "react-icons/fa";
+import React, { useState, useEffect } from "react";
+import { useSubmitHandler } from "../../SearchBar/hooks/useSubmitHandler";
+import SearchHistoryList from "./SearchHistoryList";
+import EmptySearchMessage from "./EmptySearchMessage";
 
 function RecentSearches() {
-  const searchHistoryString = localStorage.getItem("searchHistory");
-  let searchHistory = [];
+  const { handleSubmit } = useSubmitHandler();
+  const [searchHistory, setSearchHistory] = useState<string[]>([]);
 
-  if (searchHistoryString) {
-    searchHistory = JSON.parse(searchHistoryString);
-  }
+  useEffect(() => {
+    const searchHistoryString = localStorage.getItem("searchHistory");
+    if (searchHistoryString) {
+      setSearchHistory(JSON.parse(searchHistoryString));
+    }
+  }, []);
 
   const sortedSearches = [...searchHistory].reverse().slice(0, 5);
+
+  const handleDelete = (searchToDelete: string) => {
+    const updatedSearches = searchHistory.filter(
+      (search) => search !== searchToDelete
+    );
+
+    localStorage.setItem("searchHistory", JSON.stringify(updatedSearches));
+
+    setSearchHistory(updatedSearches);
+  };
 
   return (
     <div className="pb-4">
       <h2 className="text-lg text-gray-400 mb-2 p-4">최근 검색어</h2>
+
       {sortedSearches.length > 0 ? (
-        <ul>
-          {sortedSearches.map((search, index) => (
-            <li
-              key={index}
-              className="mb-1 flex items-center hover:bg-gray-100 px-4 py-2 rounded"
-            >
-              <FaSearch className="mr-4 text-gray-600" />
-              <span className="text-lg text-gray-800">{search}</span>
-            </li>
-          ))}
-        </ul>
+        <SearchHistoryList
+          searches={sortedSearches}
+          onClickItem={handleSubmit}
+          onDeleteItem={handleDelete}
+        />
       ) : (
-        <p className="p-4 text-gray-500">최근 검색어가 없습니다.</p>
+        <EmptySearchMessage />
       )}
     </div>
   );

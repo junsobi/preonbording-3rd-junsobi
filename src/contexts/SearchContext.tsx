@@ -1,35 +1,43 @@
-import React, { createContext, useReducer } from "react";
+import React, { createContext, useState } from "react";
 
-interface State {}
-
-interface Action {
-  type: string;
+interface SearchResult {
+  sickCd: string;
+  sickNm: string;
 }
 
-const initialState: State = {};
-
-const reducer = (state: State, action: Action) => {
-  switch (action.type) {
-    default:
-      return state;
-  }
-};
-
-interface ContextType {
-  state: State;
-  dispatch: React.Dispatch<Action>;
+interface SearchContextProps {
+  results: SearchResult[];
+  setResults: (results: SearchResult[]) => void;
+  isFocused: boolean;
+  setIsFocused: (isFocused: boolean) => void;
+  query: string;
+  setQuery: (query: string) => void;
 }
 
-export const SearchContext = createContext<ContextType>({
-  state: initialState,
-  dispatch: () => null,
-});
+export const SearchContext = createContext<SearchContextProps | undefined>(
+  undefined
+);
 
-export const SearchProvider = ({ children }: { children: React.ReactNode }) => {
-  const [state, dispatch] = useReducer(reducer, initialState);
+export const SearchProvider: React.FC<{ children?: React.ReactNode }> = ({
+  children,
+}) => {
+  const [results, setResults] = useState<SearchResult[]>([]);
+
+  const [isFocused, setIsFocused] = useState(false);
+
+  const [query, setQuery] = useState("");
 
   return (
-    <SearchContext.Provider value={{ state, dispatch }}>
+    <SearchContext.Provider
+      value={{
+        results,
+        setResults,
+        isFocused,
+        setIsFocused,
+        query,
+        setQuery,
+      }}
+    >
       {children}
     </SearchContext.Provider>
   );

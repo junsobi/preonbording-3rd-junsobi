@@ -1,3 +1,7 @@
 @import "tailwindcss/base";
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";
+
+body {
+  background-color: #bfdbfe; /* 테일윈드 blue-200 */
+}
